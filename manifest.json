@@ -2,12 +2,12 @@
   "name": "Project Update",
   "short_name": "CTS Update",
   "description": "Project Update Reporting Tool for Technicians",
-  "start_url": "/krtech/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#800020",
   "theme_color": "#800020",
   "orientation": "portrait-primary",
-  "scope": "/krtech/",
+  "scope": "/",
   "lang": "en-US",
   "categories": ["productivity", "business"],
   "icons": [
@@ -35,7 +35,7 @@
       "name": "New Report",
       "short_name": "New",
       "description": "Start a new project update report",
-      "url": "/krtech/?action=new",
+      "url": "/?action=new",
       "icons": [
         {
           "src": "icons/logo192.png",

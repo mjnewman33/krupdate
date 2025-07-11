@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#800020">
+    <meta name="description" content="Project Update Reporting Tool">
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="icons/urllogo.png">
+    <title>CTS Project Update</title>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading">
+        <div class="spinner"></div>
+        <p>Loading CTS Project Update...</p>
+    </div>
+
+    <!-- Login Page -->
+    <div id="loginPage" class="page">
+        <div class="container">
+            <div class="header">
+                <img src="https://lh3.googleusercontent.com/d/180LRVVMR6VzJfL1NhyV6tmCLx07y47Rc" alt="Logo" class="logo">
+                <div class="header-text">
+                    <h1>Project Update</h1>
+                    <p>Technician Login</p>
+                </div>
+            </div>
+            
+            <div class="login-container">
+                <form class="login-form" id="loginForm">
+                    <h2>Sign In</h2>
+                    
+                    <div id="loginError" class="error" style="display: none;"></div>
+                    
+                    <div class="form-group">
+                        <label for="username">Username/Email</label>
+                        <input type="text" id="username" required autocomplete="username">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" required autocomplete="current-password">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-full" id="loginBtn">
+                        Sign In
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 1: Site Information -->
+    <div id="page1" class="page">
+        <div class="container">
+            <div class="header">
+                <img src="https://lh3.googleusercontent.com/d/180LRVVMR6VzJfL1NhyV6tmCLx07y47Rc" alt="Logo" class="logo">
+                <div class="header-text">
+                    <h1>Project Update</h1>
+                    <p>Site Information</p>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="form-section">
+                <div class="form-group">
+                    <label for="technicians">Technician(s)</label>
+                    <div class="dropdown-container">
+                        <input type="text" id="technicians" class="dropdown-input technician-input" placeholder="Select or type technician name(s)" autocomplete="off" onclick="toggleDropdown('technicians')">
+                        <div class="dropdown-list" id="techniciansList"></div>
+                        <div class="technician-tags" id="technicianTags"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="dateOfWork">Date of Work</label>
+                    <div class="date-input-container">
+                        <input type="date" id="dateOfWork" class="date-input">
+                        <div class="calendar-icon" onclick="openDatePicker()">📅</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="facilityCode">Facility Code</label>
+                    <input type="text" id="facilityCode" placeholder="Enter facility code">
+                </div>
+
+                <div class="form-group">
+                    <label for="jobNumber">Job Number</label>
+                    <div class="dropdown-container">
+                        <input type="search" id="jobNumber" class="dropdown-input" placeholder="Select or type job number" autocomplete="off" list="jobNumberList">
+                        <datalist id="jobNumberList"></datalist>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-section">
+                <button class="btn btn-primary" onclick="nextPage()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 2: Job Details -->
+    <div id="page2" class="page">
+        <div class="container">
+            <div class="header">
+                <img src="https://lh3.googleusercontent.com/d/180LRVVMR6VzJfL1NhyV6tmCLx07y47Rc" alt="Logo" class="logo">
+                <div class="header-text">
+                    <h1>Project Update</h1>
+                    <p>Job Details</p>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="form-section">
+                <div class="form-group">
+                    <label>Job Status</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="complete" name="jobStatus" value="complete">
+                            <label for="complete">Complete</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="returnTrip" name="jobStatus" value="returnTrip">
+                            <label for="returnTrip">Return Trip</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="blocked" name="jobStatus" value="blocked" onchange="handleStatusChange()">
+                            <label for="blocked">Blocked</label>
+                        </div>
+                    </div>
+                    <div id="blockedReasonDiv" style="display: none;">
+                        <textarea id="blockedReason" placeholder="Enter reason why job is blocked..." style="width: 100%; height: 80px; margin-top: 10px; padding: 0.5rem; border: 2px solid #ddd; border-radius: 4px;"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="workDescription">Description of Work</label>
+                    <textarea id="workDescription" class="large-textarea" placeholder="Enter detailed description of work performed"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="outstandingIssues">Outstanding Issues</label>
+                    <textarea id="outstandingIssues" placeholder="Enter any outstanding problems or notes"></textarea>
+                </div>
+            </div>
+
+            <div class="button-section">
+                <button class="btn btn-secondary" onclick="previousPage()">Previous</button>
+                <button class="btn btn-primary" onclick="nextPage()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 3: Materials, Expenses & Photos -->
+    <div id="page3" class="page">
+        <div class="container">
+            <div class="header">
+                <img src="https://lh3.googleusercontent.com/d/180LRVVMR6VzJfL1NhyV6tmCLx07y47Rc" alt="Logo" class="logo">
+                <div class="header-text">
+                    <h1>Project Update</h1>
+                    <p>Materials, Expenses & Photos</p>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="form-section">
+                <div class="form-group">
+                    <label>Were materials used?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="materialsYes" name="materialsUsed" value="yes" onchange="handleMaterialsChange()">
+                            <label for="materialsYes">Yes</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="materialsNo" name="materialsUsed" value="no" onchange="handleMaterialsChange()">
+                            <label for="materialsNo">No</label>
+                        </div>
+                    </div>
+                    <div id="materialsSummary" style="margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 4px; display: none;">
+                        None entered
+                    </div>
+                    <button type="button" class="edit-btn" onclick="showMaterialsPopup()" style="display: none;" id="materialsEditBtn">Edit Materials</button>
+                                    </div>
+
+                <div class="form-group">
+                    <label>Was a lift used?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="liftYes" name="liftUsed" value="yes">
+                            <label for="liftYes">Yes</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="liftNo" name="liftUsed" value="no">
+                            <label for="liftNo">No</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Were there any purchases for the project?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="purchasesYes" name="purchasesUsed" value="yes" onchange="handlePurchasesChange()">
+                            <label for="purchasesYes">Yes</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="purchasesNo" name="purchasesUsed" value="no" onchange="handlePurchasesChange()">
+                            <label for="purchasesNo">No</label>
+                        </div>
+                    </div>
+                    <div id="purchasesSummary" style="margin-top: 10px; padding: 10px; background: #f5f5f5; border-radius: 4px; display: none;">
+                        None entered
+                    </div>
+                    <button type="button" class="edit-btn" onclick="showPurchasesPopup()" style="display: none;" id="purchasesEditBtn">Edit Purchases</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Do you want to upload photos?</label>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="photosYes" name="uploadPhotos" value="yes" onchange="handlePhotosChange()">
+                            <label for="photosYes">Yes</label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="photosNo" name="uploadPhotos" value="no" onchange="handlePhotosChange()">
+                            <label for="photosNo">No</label>
+                        </div>
+                    </div>
+                    <button type="button" class="edit-btn" onclick="showPhotosPopup()" style="display: none;" id="photosEditBtn">Edit Photos</button>
+                </div>
+            </div>
+
+            <div class="button-section">
+                <button class="btn btn-secondary" onclick="previousPage()">Previous</button>
+                <button class="btn btn-primary" onclick="nextPage()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page 4: Review and Submit (was Page 5) -->
+    <div id="page4" class="page">
+        <div class="container">
+            <div class="header">
+                <img src="https://lh3.googleusercontent.com/d/180LRVVMR6VzJfL1NhyV6tmCLx07y47Rc" alt="Logo" class="logo">
+                <div class="header-text">
+                    <h1>Project Update</h1>
+                    <p>Review and Submit</p>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="report" id="reportContent">
+                <!-- Report content will be generated here -->
+            </div>
+
+            <div class="customer-email-section">
+                <div class="form-group">
+                    <label for="customerEmail">Send copy to customer/client (optional)</label>
+                    <input type="email" id="customerEmail" placeholder="Enter customer email address">
+               </div>
+          </div>
+
+            <div class="button-section">
+                <button class="btn btn-secondary" onclick="previousPage()">Previous</button>
+                <button class="btn btn-primary" onclick="submitForm()" id="submitBtn">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Page -->
+    <div id="success" class="page">
+        <div class="container">
+            <div class="header">
+                <img src="https://lh3.googleusercontent.com/d/180LRVVMR6VzJfL1NhyV6tmCLx07y47Rc" alt="Logo" class="logo">
+                <div class="header-text">
+                    <h1>Submitted</h1>
+                    <p>Thank You!</p>
+                </div>
+                <button class="logout-btn" onclick="logout()">Logout</button>
+            </div>
+
+            <div class="form-section" style="justify-content: center; text-align: center;">
+                <div class="success">
+                    <h2 id="successTitle">✅ Report Successfully Submitted</h2>
+                    <p id="successMessage">Your project update has been sent to the management team.</p>
+                </div>
+            </div>
+
+            <div class="button-section">
+                <button class="btn btn-primary btn-full" onclick="logout()">Submit New Report</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Materials Popup -->
+    <div class="popup-overlay" id="materialsPopup" style="display: none;">
+        <div class="popup">
+            <div class="popup-header">
+                <h2>Materials Used</h2>
+            </div>
+            <div class="popup-content">
+                <div class="table-form" id="materialsContainer">
+                    <!-- Material rows will be added here -->
+                </div>
+                <button class="add-line-btn" onclick="addMaterialLine()">Add Material</button>
+            </div>
+            <div class="popup-footer">
+                <button class="btn btn-secondary" onclick="hideMaterialsPopup()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveMaterials()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Purchases Popup -->
+    <div class="popup-overlay" id="purchasesPopup" style="display: none;">
+        <div class="popup">
+            <div class="popup-header">
+                <h2>Purchases</h2>
+            </div>
+            <div class="popup-content">
+                <div class="table-form" id="purchasesContainer">
+                    <!-- Purchase rows will be added here -->
+                </div>
+                <button class="add-line-btn" onclick="addPurchaseLine()">Add Purchase</button>
+            </div>
+            <div class="popup-footer">
+                <button class="btn btn-secondary" onclick="hidePurchasesPopup()">Cancel</button>
+                <button class="btn btn-primary" onclick="savePurchases()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Photos Popup -->
+    <div class="popup-overlay" id="photosPopup" style="display: none;">
+        <div class="popup">
+            <div class="popup-header">
+                <h2>Upload Photos</h2>
+            </div>
+            <div class="popup-content">
+                <div class="photo-upload" onclick="document.getElementById('photoInput').click()">
+                    <p>📷 Tap to select photos</p>
+                    <input type="file" id="photoInput" multiple accept="image/*" style="display: none;" onchange="handlePhotoUpload(event)">
+                </div>
+                <div class="photo-gallery" id="photoGallery"></div>
+            </div>
+            <div class="popup-footer">
+                <button class="btn btn-secondary" onclick="hidePhotosPopup()">Done</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="app.js"></script>
+</body>
+</html>
